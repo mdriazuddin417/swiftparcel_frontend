@@ -35,7 +35,6 @@ const registerSchema = z
       .string()
       .min(8, {
         message: "Password must be at least 8 characters long.",
-        path: ["password"],
       })
       .refine(
         (val) => /[A-Z]/.test(val),
@@ -54,7 +53,7 @@ const registerSchema = z
     
     confirmPassword: z.string(),
     role: z.enum([role.sender, role.receiver], {
-      errorMap: () => ({ message: "Please select an account type" }),
+      message: "Please select an account type",
     }),
   })
   .refine((data) => data.password === data.confirmPassword, {

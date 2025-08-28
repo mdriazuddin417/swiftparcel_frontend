@@ -9,21 +9,21 @@ interface StatusDistributionChartProps {
     name: string
     value: number
     color: string
-  }>
+  }> 
 }
 
 export function StatusDistributionChart({ data }: StatusDistributionChartProps) {
   const safeData = data || []
 
-  const chartConfig = safeData.reduce((config, item) => {
+  const chartConfig = safeData?.reduce<Record<string, { label: string; color: string }>>((config, item) => {
     config[item.name.toLowerCase().replace(" ", "")] = {
       label: item.name,
       color: item.color,
     }
     return config
-  }, {} as any)
+  }, {})
 
-  if (safeData.length === 0) {
+  if (safeData?.length === 0) {
     return (
       <Card>
         <CardHeader>
@@ -44,7 +44,7 @@ export function StatusDistributionChart({ data }: StatusDistributionChartProps) 
         <CardDescription>Current parcel status breakdown</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer config={chartConfig }>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie

@@ -16,7 +16,7 @@ export default function AdminAnalytics() {
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
 
     // Delivery Trends → derive from backend if available
-    const deliveryTrends = months.map((month, index) => ({
+    const deliveryTrends = months.map((month) => ({
       month,
       delivered: stats?.deliveredParcels || 0,
       pending: stats?.pendingParcels || 0,

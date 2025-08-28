@@ -1,14 +1,27 @@
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { useToast } from "@/components/ui/use-toast"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Clock, Mail, MapPin, Phone } from "lucide-react"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
 
 const contactSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -17,9 +30,9 @@ const contactSchema = z.object({
   phone: z.string().optional(),
   subject: z.string().min(5, "Subject must be at least 5 characters"),
   message: z.string().min(10, "Message must be at least 10 characters"),
-})
+});
 
-type ContactFormValues = z.infer<typeof contactSchema>
+type ContactFormValues = z.infer<typeof contactSchema>;
 
 export default function Contact() {
   const form = useForm<ContactFormValues>({
@@ -32,29 +45,29 @@ export default function Contact() {
       subject: "",
       message: "",
     },
-  })
-
-  const { toast } = useToast()
+  });
 
   const onSubmit = async (values: ContactFormValues) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    toast({
-      title: "Message sent!",
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    console.log("values", values);
+    toast.success("Message sent!", {
       description: "We'll get back to you within 24 hours.",
-    })
+    });
 
-    form.reset()
-  }
+    form.reset();
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary/5 to-accent/5 py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">Contact Us</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+            Contact Us
+          </h1>
           <p className="text-xl text-muted-foreground">
-            Have questions? We're here to help. Reach out to us anytime and we'll get back to you as soon as possible.
+            Have questions? We're here to help. Reach out to us anytime and
+            we'll get back to you as soon as possible.
           </p>
         </div>
       </section>
@@ -67,11 +80,16 @@ export default function Contact() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-2xl">Send us a message</CardTitle>
-                <CardDescription>Fill out the form below and we'll respond within 24 hours.</CardDescription>
+                <CardDescription>
+                  Fill out the form below and we'll respond within 24 hours.
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-6"
+                  >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <FormField
                         control={form.control}
@@ -150,15 +168,25 @@ export default function Contact() {
                         <FormItem>
                           <FormLabel>Message</FormLabel>
                           <FormControl>
-                            <Textarea rows={5} placeholder="Tell us how we can help you..." {...field} />
+                            <Textarea
+                              rows={5}
+                              placeholder="Tell us how we can help you..."
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
 
-                    <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-                      {form.formState.isSubmitting ? "Sending..." : "Send Message"}
+                    <Button
+                      type="submit"
+                      className="w-full"
+                      disabled={form.formState.isSubmitting}
+                    >
+                      {form.formState.isSubmitting
+                        ? "Sending..."
+                        : "Send Message"}
                     </Button>
                   </form>
                 </Form>
@@ -170,7 +198,9 @@ export default function Contact() {
               <Card>
                 <CardHeader>
                   <CardTitle className="text-2xl">Get in touch</CardTitle>
-                  <CardDescription>We're here to help with any questions about our services.</CardDescription>
+                  <CardDescription>
+                    We're here to help with any questions about our services.
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="flex items-start space-x-4">
@@ -178,7 +208,9 @@ export default function Contact() {
                     <div>
                       <h3 className="font-semibold">Phone</h3>
                       <p className="text-muted-foreground">+1 (555) 123-4567</p>
-                      <p className="text-sm text-muted-foreground">Mon-Fri 9am-6pm EST</p>
+                      <p className="text-sm text-muted-foreground">
+                        Mon-Fri 9am-6pm EST
+                      </p>
                     </div>
                   </div>
 
@@ -186,8 +218,12 @@ export default function Contact() {
                     <Mail className="h-6 w-6 text-primary mt-1" />
                     <div>
                       <h3 className="font-semibold">Email</h3>
-                      <p className="text-muted-foreground">support@swiftparcel.com</p>
-                      <p className="text-sm text-muted-foreground">We'll respond within 24 hours</p>
+                      <p className="text-muted-foreground">
+                        support@swiftparcel.com
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        We'll respond within 24 hours
+                      </p>
                     </div>
                   </div>
 
@@ -225,7 +261,9 @@ export default function Contact() {
               <Card>
                 <CardHeader>
                   <CardTitle>Quick Help</CardTitle>
-                  <CardDescription>Looking for quick answers? Check out these common topics.</CardDescription>
+                  <CardDescription>
+                    Looking for quick answers? Check out these common topics.
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm">
@@ -262,5 +300,5 @@ export default function Contact() {
         </div>
       </section>
     </div>
-  )
+  );
 }

@@ -6,7 +6,6 @@ import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { useState } from "react"
 
-import { useToast } from "@/components/ui/use-toast"
 import { Bell, Database, Globe, Settings, Shield } from "lucide-react"
 
 export default function AdminSettingsPage() {
@@ -23,14 +22,11 @@ export default function AdminSettingsPage() {
     companyAddress: "123 Business Street, City, State 12345",
   })
 
-  const { toast } = useToast()
+
 
   const handleSave = () => {
     // Mock save functionality
-    toast({
-      title: "Settings saved",
-      description: "Your settings have been updated successfully.",
-    })
+   
   }
 
   const handleReset = () => {
@@ -46,10 +42,7 @@ export default function AdminSettingsPage() {
       supportEmail: "support@swiftparcel.com",
       companyAddress: "123 Business Street, City, State 12345",
     })
-    toast({
-      title: "Settings reset",
-      description: "All settings have been reset to default values.",
-    })
+  
   }
 
   return (

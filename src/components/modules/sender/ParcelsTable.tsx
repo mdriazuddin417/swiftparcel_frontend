@@ -65,9 +65,6 @@ export function ParcelsTable({ parcels, onParcelUpdated }: ParcelsTableProps) {
     }
   }
 
-  const canCancelParcel = (parcel: Parcel) => {
-    return parcel.status === "PENDING" || parcel.status === "APPROVED"
-  }
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -241,9 +238,9 @@ export function ParcelsTable({ parcels, onParcelUpdated }: ParcelsTableProps) {
                                         </div>
                                         <div className="flex-1 min-w-0">
                                           <div className="flex items-center justify-between">
-                                            <h4 className="font-medium">{getStatusLabel(update.status)}</h4>
+                                            <h4 className="font-medium">{getStatusLabel(update?.status ||"")}</h4>
                                             <span className="text-sm text-muted-foreground">
-                                              {formatDate(update.timestamp)}
+                                              {formatDate(update.timestamp ?? "")}
                                             </span>
                                           </div>
                                           <div className="flex items-center gap-2 text-sm text-muted-foreground">

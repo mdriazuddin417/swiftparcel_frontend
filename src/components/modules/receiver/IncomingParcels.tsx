@@ -16,7 +16,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -32,24 +31,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
 
 import {
   IParcelStatus,
   type Parcel,
-  confirmDelivery,
   getStatusColor,
-  getStatusLabel,
+  getStatusLabel
 } from "@/lib/parcels";
 import {
-  CheckCircle,
   Clock,
   DollarSign,
   Eye,
   MapPin,
   Package,
-  Search,
+  Search
 } from "lucide-react";
 import { useState } from "react";
 
@@ -61,10 +56,6 @@ export function IncomingParcels({ parcels }: IncomingParcelsProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedParcel, setSelectedParcel] = useState<Parcel | null>(null);
-  const [isConfirming, setIsConfirming] = useState(false);
-  const [confirmationNote, setConfirmationNote] = useState("");
-  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const { toast } = useToast();
 
   const filteredParcels = parcels.filter((parcel) => {
     const matchesSearch =
@@ -78,31 +69,6 @@ export function IncomingParcels({ parcels }: IncomingParcelsProps) {
     return matchesSearch && matchesStatus;
   });
 
-  const handleConfirmDelivery = async (parcelId: string) => {
-    setIsConfirming(true);
-    try {
-      await confirmDelivery(parcelId, confirmationNote);
-      toast({
-        title: "Delivery confirmed!",
-        description: "Thank you for confirming the delivery",
-      });
-      setConfirmationNote("");
-      setShowConfirmDialog(false);
-    } catch (error) {
-      toast({
-        title: "Failed to confirm delivery",
-        description:
-          error instanceof Error ? error.message : "An error occurred",
-        variant: "destructive",
-      });
-    } finally {
-      setIsConfirming(false);
-    }
-  };
-
-  const canConfirmDelivery = (parcel: Parcel) => {
-    return parcel.status === IParcelStatus.OUT_FOR_DELIVERY;
-  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -407,72 +373,6 @@ export function IncomingParcels({ parcels }: IncomingParcelsProps) {
                           </DialogContent>
                         </Dialog>
 
-                        {canConfirmDelivery(parcel) && (
-                          <Dialog
-                            open={showConfirmDialog}
-                            onOpenChange={setShowConfirmDialog}
-                          >
-                            <DialogTrigger asChild>
-                              <Button
-                                size="sm"
-                                onClick={() => {
-                                  setSelectedParcel(parcel);
-                                  setShowConfirmDialog(true);
-                                }}
-                              >
-                                <CheckCircle className="h-4 w-4 mr-1" />
-                                Confirm
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                              <DialogHeader>
-                                <DialogTitle>Confirm Delivery</DialogTitle>
-                                <DialogDescription>
-                                  Please confirm that you have received parcel{" "}
-                                  {selectedParcel?.trackingId}
-                                </DialogDescription>
-                              </DialogHeader>
-                              <div className="space-y-4">
-                                <div className="space-y-2">
-                                  <Label htmlFor="confirmationNote">
-                                    Delivery Notes (Optional)
-                                  </Label>
-                                  <Textarea
-                                    id="confirmationNote"
-                                    placeholder="Any comments about the delivery condition..."
-                                    value={confirmationNote}
-                                    onChange={(e) =>
-                                      setConfirmationNote(e.target.value)
-                                    }
-                                    rows={3}
-                                  />
-                                </div>
-                                <div className="flex justify-end space-x-2">
-                                  <Button
-                                    variant="outline"
-                                    onClick={() => {
-                                      setShowConfirmDialog(false);
-                                      setConfirmationNote("");
-                                    }}
-                                  >
-                                    Cancel
-                                  </Button>
-                                  <Button
-                                    onClick={() =>
-                                      selectedParcel &&
-                                      handleConfirmDelivery(selectedParcel.id)
-                                    }
-                                    disabled={isConfirming}
-                                  >
-                                    {isConfirming
-                                      ? "Confirming..."
-                                      : "Confirm Delivery"}
-                                  </Button>
-                                </div>
-                              </div>
-                            </DialogContent>
-                          </Dialog>
-                        )}
                       </div>
                     </TableCell>
                   </TableRow>

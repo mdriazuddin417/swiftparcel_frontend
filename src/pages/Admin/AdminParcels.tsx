@@ -3,7 +3,7 @@ import { ParcelsManagement } from "@/components/modules/Admin/ParcelsManagement"
 import { useGetAllParcelsQuery } from "@/redux/features/parcel/parcel.api";
 
 export default function AdminParcels() {
-    const { data: parcels ,isLoading} = useGetAllParcelsQuery();
+    const { data: parcels ,isLoading} = useGetAllParcelsQuery(undefined);
 
 
   if (isLoading) {

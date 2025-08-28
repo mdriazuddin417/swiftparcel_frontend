@@ -49,7 +49,7 @@ interface ParcelsManagementProps {
 
 export function ParcelsManagement({ parcels }: ParcelsManagementProps) {
   const [updateParcel] = useUpdateParcelMutation();
-  const { data: deliveryPersonnel, isLoading: deliveryManLoading } =
+  const { data: deliveryPersonnel, } =
     useGetAllDeliveryManQuery(undefined);
   const [searchTerm, setSearchTerm] = useState("");
   const {data:userData} = useUserInfoQuery(undefined);

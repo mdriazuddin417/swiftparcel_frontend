@@ -9,7 +9,7 @@ export default function CreateParcelPage() {
         <p className="text-muted-foreground">Send a new parcel with our reliable delivery service.</p>
       </div>
 
-      <CreateParcelForm onParcelCreated={() => { /* handle parcel created */ }} />
+      <CreateParcelForm />
     </div>
   )
 }

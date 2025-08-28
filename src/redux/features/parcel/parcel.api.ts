@@ -62,7 +62,7 @@ export const parcelApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["PARCEL"],
     }),
-    getAllParcels: builder.query<Parcel[], {sender?: string,receiverEmail?: string}>({
+    getAllParcels: builder.query<Parcel[], void>({
       query: () => ({
         url: "/parcel",
         method: "GET",

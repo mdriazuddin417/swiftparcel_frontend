@@ -2,14 +2,12 @@ import App from "@/App";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { role } from "@/constants/role";
 import About from "@/pages/About";
-import Booking from "@/pages/Booking";
 import Contact from "@/pages/Contact";
 import Homepage from "@/pages/Homepage";
 import Login from "@/pages/Login";
 import Fail from "@/pages/Payment/Fail";
 import Success from "@/pages/Payment/Success";
 import Register from "@/pages/Register";
-import TourDetails from "@/pages/TourDetails";
 import Track from "@/pages/Track";
 import Unauthorized from "@/pages/Unauthorized";
 import Verify from "@/pages/Verify";
@@ -41,14 +39,6 @@ export const router = createBrowserRouter([
       {
         Component: Track,
         path: "track",
-      },
-      {
-        Component: TourDetails,
-        path: "tours/:id",
-      },
-      {
-        Component: withAuth(Booking),
-        path: "booking/:id",
       },
     ],
   },

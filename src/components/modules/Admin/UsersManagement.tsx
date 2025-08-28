@@ -20,7 +20,7 @@ import { useState } from "react"
 
 import { role } from "@/constants/role"
 import { type UserWithStatus, getRoleBadgeColor } from "@/lib/admin"
-import { IsActive } from "@/lib/auth"
+
 import { useUpdateUserMutation } from "@/redux/features/user/user.api"
 import { Calendar, Mail, Search, Shield, ShieldOff, User } from "lucide-react"
 import { toast } from "sonner"
@@ -191,7 +191,7 @@ export function UsersManagement({ users }: UsersManagementProps) {
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
                             <Button variant="outline" size="sm">
-                              {user.isActive === IsActive.ACTIVE ? (
+                              {user.isActive === 'ACTIVE' ? (
                                 <>
                                   <Shield className="h-4 w-4 mr-1" />
                                   {user.isActive}
@@ -208,7 +208,7 @@ export function UsersManagement({ users }: UsersManagementProps) {
                             <AlertDialogHeader>
                               <AlertDialogTitle>{user.isActive} User</AlertDialogTitle>
                               <AlertDialogDescription>
-                                Are you sure you want to {user.isActive !== IsActive.ACTIVE ? "Unblock" : "Block"}{" "}
+                                Are you sure you want to {user.isActive == "ACTIVE" ? "Unblock" : "Block"}{" "}
                                 <strong>
                                   {user.name}
                                 </strong>
@@ -221,10 +221,10 @@ export function UsersManagement({ users }: UsersManagementProps) {
                             <AlertDialogFooter>
                               <AlertDialogCancel>Cancel</AlertDialogCancel>
                               <AlertDialogAction
-                                onClick={() => handleToggleBlock(user?._id, user.isActive !== IsActive.ACTIVE ? IsActive.ACTIVE : IsActive.BLOCKED)}
-                                className={user.isActive !== IsActive.ACTIVE ? "" : "bg-destructive hover:bg-destructive/90"}
+                                onClick={() => handleToggleBlock(user?._id, user.isActive == "ACTIVE" ? "ACTIVE" : "BLOCKED")}
+                                className={user.isActive == "ACTIVE" ? "" : "bg-destructive hover:bg-destructive/90"}
                               >
-                                {user.isActive !== IsActive.ACTIVE ? "Unblock" : "Block"}
+                                {user.isActive == "ACTIVE" ? "Unblock" : "Block"}
                               </AlertDialogAction>
                             </AlertDialogFooter>
                           </AlertDialogContent>
@@ -245,8 +245,8 @@ export function UsersManagement({ users }: UsersManagementProps) {
               Showing {filteredUsers?.length} of {users.length} users
             </div>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <span>Active: {filteredUsers?.filter((u) => u.isActive === IsActive.ACTIVE).length}</span>
-              <span>Blocked: {filteredUsers?.filter((u) => u.isActive === IsActive.BLOCKED).length}</span>
+              <span>Active: {filteredUsers?.filter((u) => u.isActive === 'ACTIVE').length}</span>
+              <span>Blocked: {filteredUsers?.filter((u) => u.isActive === 'BLOCKED').length}</span>
             </div>
           </div>
         )}

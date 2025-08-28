@@ -27,23 +27,55 @@ import {
   MapPin,
   Package,
   Search,
-  Truck
+  Truck,
 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
+// ---------------- SCHEMA ----------------
 const trackingSchema = z.object({
   trackingId: z
     .string()
     .min(3, "Tracking ID must be at least 3 characters")
     .max(20, "Tracking ID is too long"),
 });
-
 type TrackingFormValues = z.infer<typeof trackingSchema>;
 
-export default function Track() {
+// ---------------- TYPES ----------------
+interface TimelineEvent {
+  status: string;
+  location: string;
+  timestamp: string | null;
+  completed: boolean;
+  description: string;
+}
 
+interface TrackingResult {
+  id: string;
+  status: string;
+  sender?: string;
+  receiver?: string;
+  origin: string;
+  destination: string;
+  estimatedDelivery: string;
+  cost?: number;
+  weight?: number;
+  dimensions?: {
+    length: number;
+    width: number;
+    height: number;
+  };
+  deliveryType?: string;
+  createdAt?: string;
+  deliveredAt?: string;
+  timeline: TimelineEvent[];
+}
+
+
+
+// ---------------- COMPONENT ----------------
+export default function Track() {
   const form = useForm<TrackingFormValues>({
     resolver: zodResolver(trackingSchema),
     defaultValues: {
@@ -51,7 +83,9 @@ export default function Track() {
     },
   });
 
-  const [trackingResult, setTrackingResult] = useState<any>(null);
+  const [trackingResult, setTrackingResult] = useState<TrackingResult | null>(
+    null
+  );
   const [error, setError] = useState<string | null>(null);
 
   const [trackParcel] = useTrackParcelMutation();
@@ -61,54 +95,63 @@ export default function Track() {
     setTrackingResult(null);
 
     try {
-      const parcel = await trackParcel(values.trackingId.trim()).unwrap();
+      const parcel = await trackParcel(
+        values.trackingId.trim()
+      ).unwrap();
 
-      if (!parcel) {
+      if (!parcel || !parcel.trackingId) {
         setError(
           "Parcel not found. Please check your tracking ID and try again."
         );
         return;
       }
-    
 
-      const trackingData = {
+      const trackingData: TrackingResult = {
         id: parcel.trackingId,
-        status: parcel.status,
+        status: parcel.status ?? "",
         sender: parcel.sender?.name,
         receiver: parcel.receiver?.name,
         origin: `${parcel.pickupAddress?.city ?? ""}, ${
           parcel.pickupAddress?.state ?? ""
         }`,
-        destination: `${parcel.receiver?.address?.city ?? ""}, ${
-          parcel.receiver?.address?.state ?? ""
+        destination: `${parcel.deliveryAddress?.city ?? ""}, ${
+          parcel.deliveryAddress?.state ?? ""
         }`,
-        estimatedDelivery:parcel.createdAt&&new Date(new Date(parcel.createdAt).getTime() + 3 * 24 * 60 * 60 * 1000).toLocaleDateString() ||"",
-        // estimatedDelivery: parcel.createdAt
-        //   ? new Date(new Date(parcel.createdAt).getTime() + 3 * 24 * 60 * 60 * 1000)
-        //   : null,
+        estimatedDelivery:
+          (parcel.createdAt &&
+            new Date(
+              new Date(parcel.createdAt).getTime() +
+                3 * 24 * 60 * 60 * 1000
+            ).toLocaleDateString()) ||
+          "",
         cost: parcel.cost,
         weight: parcel.weight,
         dimensions: parcel.dimensions,
         deliveryType: parcel.parcelType,
         createdAt: parcel.createdAt,
         deliveredAt: parcel.updatedAt,
-        timeline: parcel?.statusHistory?.map((log: any, index: number) => ({
-          status: log?.status,
-          location:
-            log?.location ||
-            (index === 0
-              ? `${parcel.pickupAddress?.city ?? ""}, ${
-                  parcel.pickupAddress?.state ?? ""
-                }`
-              : `${parcel.deliveryAddress?.city ?? ""}, ${
-                  parcel.deliveryAddress?.state ?? ""
-                }`),
-          timestamp: log?.timestamp,
-          completed: true,
-          description: log?.note || getStatusDescription(log?.status),
-        })) ?? [],
+        timeline:
+          parcel?.statusHistory?.map((log, index) => ({
+            status: log.status ?? "",
+            location:
+              log.location ||
+              (index === 0
+                ? `${parcel.pickupAddress?.city ?? ""}, ${
+                    parcel.pickupAddress?.state ?? ""
+                  }`
+                : `${parcel.deliveryAddress?.city ?? ""}, ${
+                    parcel.deliveryAddress?.state ?? ""
+                  }`),
+            timestamp: log.timestamp ?? null,
+            completed: true,
+            description: log.note || getStatusDescription(log.status ?? ""),
+          })) ?? [],
       };
-      if (parcel.status !== IParcelStatus.DELIVERED && parcel.status !== IParcelStatus.CANCELLED) {
+
+      if (
+        parcel.status !== IParcelStatus.DELIVERED &&
+        parcel.status !== IParcelStatus.CANCELLED
+      ) {
         const futureSteps = getFutureSteps(parcel.status ?? "");
         trackingData.timeline.push(...futureSteps);
       }
@@ -121,8 +164,7 @@ export default function Track() {
     }
   };
 
-
-
+  // ---------------- HELPERS ----------------
   const getStatusDescription = (status: string) => {
     switch (status) {
       case IParcelStatus.PENDING:
@@ -142,7 +184,7 @@ export default function Track() {
     }
   };
 
-  const getFutureSteps = (currentStatus: string) => {
+  const getFutureSteps = (currentStatus: string): TimelineEvent[] => {
     const allSteps = [
       { status: IParcelStatus.PENDING, description: "Parcel request created" },
       { status: IParcelStatus.PICKED_UP, description: "Parcel collected from sender" },
@@ -157,7 +199,7 @@ export default function Track() {
     return allSteps.slice(currentIndex + 1).map((step) => ({
       status: step.status,
       location: "Estimated",
-      timestamp: "Pending",
+      timestamp: null,
       completed: false,
       description: step.description,
     }));
@@ -180,8 +222,7 @@ export default function Track() {
     }
   };
 
-  console.log('tra',trackingResult);
-
+  // ---------------- RENDER ----------------
   return (
     <div className="min-h-screen flex flex-col">
       {/* Hero Section */}
@@ -338,7 +379,7 @@ export default function Track() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
-                  {trackingResult.timeline.map((event:any, index: number) => (
+                  {trackingResult.timeline.map((event, index) => (
                     <div key={index} className="flex items-start gap-4">
                       <div className="flex flex-col items-center">
                         <div
@@ -374,7 +415,9 @@ export default function Track() {
                             {event.status}
                           </h3>
                           <span className="text-sm text-muted-foreground">
-                            {event.timestamp && new Date(event.timestamp).toLocaleString()}
+                            {event.timestamp
+                              ? new Date(event.timestamp).toLocaleString()
+                              : "Pending"}
                           </span>
                         </div>
                         <p className="text-sm text-muted-foreground mb-1">
@@ -392,7 +435,6 @@ export default function Track() {
           </div>
         </section>
       )}
-
     </div>
   );
 }

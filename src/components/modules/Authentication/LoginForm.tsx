@@ -54,7 +54,21 @@ export function LoginForm({
           toast.error("Invalid credentials");
         }
       }
-      if (err.data.message === "User is not verified") {
+      interface CustomError {
+        data?: {
+          message?: string;
+        };
+      }
+
+      if (
+        typeof err === "object" &&
+        err !== null &&
+        "data" in err &&
+        typeof (err as CustomError).data === "object" &&
+        (err as CustomError).data !== null &&
+        "message" in (err as CustomError).data! &&
+        (err as CustomError).data!.message === "User is not verified"
+      ) {
         toast.error("Your account is not verified");
         navigate("/verify", { state: data.email });
       }
