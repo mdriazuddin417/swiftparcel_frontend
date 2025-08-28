@@ -62,10 +62,19 @@ export const parcelApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["PARCEL"],
     }),
-    getAllParcels: builder.query<Parcel[], void>({
+    getAllParcels: builder.query<Parcel[], {sender?: string,receiverEmail?: string}>({
       query: () => ({
         url: "/parcel",
         method: "GET",
+      }),
+      providesTags: ["PARCEL"],
+       transformResponse: (response: ParcelsResponse) => response.data as Parcel[],
+    }),
+    getSingleUserParcels: builder.query<Parcel[], {sender?: string,receiverEmail?: string}>({
+      query: ({sender,receiverEmail}) => ({
+        url: "/parcel/my-parcels",
+        method: "GET",
+        params: { sender,receiverEmail },
       }),
       providesTags: ["PARCEL"],
        transformResponse: (response: ParcelsResponse) => response.data as Parcel[],
@@ -93,4 +102,4 @@ export const parcelApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useCreateParcelMutation, useGetAllParcelsQuery, useGetParcelByIdQuery, useUpdateParcelMutation, useDeleteParcelMutation ,useTrackParcelMutation,useGetAllStatsQuery} = parcelApi;
+export const { useCreateParcelMutation, useGetAllParcelsQuery, useGetParcelByIdQuery, useUpdateParcelMutation, useDeleteParcelMutation ,useTrackParcelMutation,useGetAllStatsQuery,useGetSingleUserParcelsQuery} = parcelApi;

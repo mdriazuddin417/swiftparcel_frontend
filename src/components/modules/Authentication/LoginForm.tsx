@@ -32,8 +32,8 @@ export function LoginForm({
   const form = useForm({
     //! For development only
     defaultValues: {
-      email: "mdriazuddin417@gmail.com",
-      password: "Riaz417#",
+      email: "",
+      password: "",
     },
   });
   const [login] = useLoginMutation();
@@ -138,9 +138,9 @@ export function LoginForm({
                 Demo accounts:
               </p>
               <div className="space-y-1 text-xs">
-                <div>Admin: admin@swiftparcel.com / password123</div>
-                <div>Sender: sender@example.com / password123</div>
-                <div>Receiver: receiver@example.com / password123</div>
+                <div>Admin: admin@swiftparcel.com / Password123@</div>
+                <div>Sender: sender@swiftparcel.com / Password123@</div>
+                <div>Receiver: receiver@swiftparcel.com / Password123@</div>
               </div>
             </div>
           </CardContent>

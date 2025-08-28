@@ -4,12 +4,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { IParcelStatus } from "@/lib/parcels";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 
-import { useGetAllParcelsQuery } from "@/redux/features/parcel/parcel.api";
+import { useGetSingleUserParcelsQuery } from "@/redux/features/parcel/parcel.api";
 import { CheckCircle, Clock, Package, Truck } from "lucide-react";
 
 export default function ReceiverDashboard() {
-   const { data: parcels, isLoading } = useGetAllParcelsQuery();
-   const { data:userData } = useUserInfoQuery(undefined);
+  const { data:userData } = useUserInfoQuery(undefined);
+
+   const { data: parcels, isLoading } = useGetSingleUserParcelsQuery({receiverEmail:userData?.data?.email},{
+    skip: !userData?.data?.email
+   });
    const safeParcels = parcels ?? [];
 
 

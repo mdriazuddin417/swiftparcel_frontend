@@ -178,23 +178,23 @@ export function IncomingParcels({ parcels }: IncomingParcelsProps) {
                   </TableCell>
                 </TableRow>
               ) : (
-                filteredParcels.map((parcel) => (
+                filteredParcels?.map((parcel) => (
                   <TableRow key={parcel._id}>
                     <TableCell className="font-mono text-sm">
                       {parcel.trackingId}
                     </TableCell>
                     <TableCell>
                       <div>
-                        <div className="font-medium">{parcel.sender.name}</div>
+                        <div className="font-medium">{parcel?.sender?.name}</div>
                         <div className="text-sm text-muted-foreground">
-                          {parcel.sender.email}
+                          {parcel?.sender?.email}
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>{parcel.parcelType}</TableCell>
                     <TableCell>
-                      <Badge className={getStatusColor(parcel.status)}>
-                        {getStatusLabel(parcel.status)}
+                      <Badge className={getStatusColor(parcel?.status)}>
+                        {getStatusLabel(parcel?.status)}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-sm">

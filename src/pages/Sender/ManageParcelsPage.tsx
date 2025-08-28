@@ -2,10 +2,14 @@
 
 
 import { ParcelsTable } from "@/components/modules/sender/ParcelsTable";
-import { useGetAllParcelsQuery } from "@/redux/features/parcel/parcel.api";
+import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
+import { useGetSingleUserParcelsQuery } from "@/redux/features/parcel/parcel.api";
 
 export default function ManageParcelsPage() {
-  const { data: parcels ,isLoading} = useGetAllParcelsQuery();
+  const {data:user} = useUserInfoQuery(undefined);
+  const { data: parcels ,isLoading} = useGetSingleUserParcelsQuery({sender:user?.data?._id},{
+    skip: !user?.data?._id
+  });
 
   if (isLoading) {
     return (

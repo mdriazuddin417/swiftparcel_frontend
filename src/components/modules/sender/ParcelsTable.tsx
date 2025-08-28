@@ -46,7 +46,7 @@ export function ParcelsTable({ parcels, onParcelUpdated }: ParcelsTableProps) {
     return matchesSearch && matchesStatus || []
   })
 
-  console.log('selectedParcel', selectedParcel);
+
 
   const handleCancelParcel = async (parcelId: string) => {
     setIsCancelling(true)
@@ -220,10 +220,7 @@ export function ParcelsTable({ parcels, onParcelUpdated }: ParcelsTableProps) {
                                       {selectedParcel?.dimensions?.width} × {selectedParcel?.dimensions?.height} cm
                                     </div>}
                                     <div>
-                                      <strong>Value:</strong> ${selectedParcel.value}
-                                    </div>
-                                    <div>
-                                      <strong>Delivery Type:</strong> {selectedParcel.deliveryType}
+                                      <strong>Value:</strong> ${selectedParcel.cost}
                                     </div>
                                     {selectedParcel.notes && (
                                       <div>
@@ -271,7 +268,7 @@ export function ParcelsTable({ parcels, onParcelUpdated }: ParcelsTableProps) {
                                       <Clock className="h-4 w-4 text-muted-foreground" />
                                       <span className="font-medium">Estimated Delivery</span>
                                     </div>
-                                    <span>{formatDate(selectedParcel.estimatedDelivery)}</span>
+                                    <span>{formatDate(selectedParcel.createdAt)}</span>
                                   </div>
                                   {selectedParcel.actualDelivery && (
                                     <div className="space-y-2">

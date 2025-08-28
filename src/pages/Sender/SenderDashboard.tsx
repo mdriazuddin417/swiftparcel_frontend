@@ -1,13 +1,15 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
-import { useGetAllParcelsQuery } from "@/redux/features/parcel/parcel.api";
+import { useGetSingleUserParcelsQuery } from "@/redux/features/parcel/parcel.api";
 import { CheckCircle, Clock, Package, TrendingUp } from "lucide-react";
 
 export default function SenderDashboard() {
 
 
 const {data: user} = useUserInfoQuery(undefined);
-const {data: parcels , isLoading} = useGetAllParcelsQuery(user?.id);
+const {data: parcels , isLoading} = useGetSingleUserParcelsQuery({sender:user?.data?._id},{
+  skip: !user?.data?._id
+});
 const safeParcels = parcels ?? [];
 
   const stats = {
@@ -31,7 +33,7 @@ const safeParcels = parcels ?? [];
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Overview</h1>
-        <p className="text-muted-foreground">Welcome back, {user?.firstName}! Here's your parcel delivery summary.</p>
+        <p className="text-muted-foreground">Welcome back, {user?.data?.name}! Here's your parcel delivery summary.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -100,7 +102,7 @@ const safeParcels = parcels ?? [];
           ) : (
             <div className="space-y-4">
               {safeParcels.slice(0, 5).map((parcel) => (
-                <div key={parcel.id} className="flex items-center justify-between p-4 border rounded-lg">
+                <div key={parcel._id} className="flex items-center justify-between p-4 border rounded-lg">
                   <div className="flex items-center space-x-4">
                     <Package className="h-8 w-8 text-muted-foreground" />
                     <div>

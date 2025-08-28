@@ -1,12 +1,18 @@
 
 
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { useGetAllParcelsQuery } from "@/redux/features/parcel/parcel.api"
-import { Calendar, CheckCircle } from "lucide-react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
+import { useGetSingleUserParcelsQuery } from "@/redux/features/parcel/parcel.api";
+import { Calendar, CheckCircle } from "lucide-react";
 
 export default function ReceiverDeliveryHistory() {
-  const {data:parcels} = useGetAllParcelsQuery()
+  const {data:userData} = useUserInfoQuery(undefined);
+  const {data:parcels} = useGetSingleUserParcelsQuery({
+    receiverEmail: userData?.data?.email
+  },{
+    skip:userData?.data?.email
+  })
 
   const deliveredParcels = parcels?.filter((p) => p.status === "DELIVERED")
 
